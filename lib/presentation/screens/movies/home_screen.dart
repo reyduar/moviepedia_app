@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moviepedia_app/config/constants/environment.dart';
 
 class HomeScreen extends StatelessWidget {
   static const name = 'home-screen';
@@ -10,8 +11,8 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Moviepedia'),
       ),
-      body: const Center(
-        child: Text('Home Screen'),
+      body: Center(
+        child: Text(Environment.dbkey),
       ),
     );
   }
