@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:moviepedia_app/config/router/app_router.dart';
 import 'package:moviepedia_app/config/theme/app_theme.dart';
@@ -14,7 +15,7 @@ Future main() async {
   // Ensure that the filename corresponds to the path in step 1 and 2.
   await dotenv.load(fileName: ".env");
   //...runapp
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
