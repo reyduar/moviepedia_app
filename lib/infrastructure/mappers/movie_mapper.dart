@@ -6,7 +6,7 @@ class MovieMapper {
   static Movie movieDBToEntity(MovieMovieDB moviedb) => Movie(
       adult: moviedb.adult,
       backdropPath: (moviedb.backdropPath != '')
-          ? '${Environment.imageUrl}/${moviedb.backdropPath}'
+          ? '${Environment.imageUrl}${moviedb.backdropPath}'
           : Environment.imageNotFoundUrl,
       genreIds: moviedb.genreIds.map((e) => e.toString()).toList(),
       id: moviedb.id,
@@ -15,7 +15,7 @@ class MovieMapper {
       overview: moviedb.overview,
       popularity: moviedb.popularity,
       posterPath: (moviedb.posterPath != '')
-          ? '${Environment.imageUrl}/${moviedb.posterPath}'
+          ? '${Environment.imageUrl}${moviedb.posterPath}'
           : 'no-poster',
       releaseDate: moviedb.releaseDate,
       title: moviedb.title,

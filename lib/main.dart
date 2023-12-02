@@ -25,7 +25,6 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: appRouter,
-      title: "MoviePedia",
       debugShowCheckedModeBanner: false,
       theme: AppTheme().getTheme(),
     );

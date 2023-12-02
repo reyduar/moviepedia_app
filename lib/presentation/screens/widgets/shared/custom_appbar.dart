@@ -9,33 +9,28 @@ class CustomAppbar extends StatelessWidget {
     final titleStyle = Theme.of(context).textTheme.titleMedium;
 
     return SafeArea(
-        child: Container(
-      color: Colors.blueGrey,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: SizedBox(
-          width: double.infinity,
-          child: Row(
-            children: [
-              Icon(
-                Icons.movie_outlined,
-                color: colors.onPrimary,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                'List of Showtime movies',
-                style: titleStyle,
-              ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.search),
-                color: colors.onPrimary,
-              ),
-            ],
-          ),
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: SizedBox(
+        width: double.infinity,
+        child: Row(
+          children: [
+            const Icon(
+              Icons.movie_outlined,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Showtime Movies',
+              style: titleStyle,
+            ),
+            const Spacer(),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.search),
+            ),
+          ],
         ),
       ),
     ));
