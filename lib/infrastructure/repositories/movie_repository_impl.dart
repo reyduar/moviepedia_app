@@ -5,8 +5,14 @@ import 'package:moviepedia_app/infrastructure/datasources/moviedb_datasource.dar
 class MovieReposioryImpl extends MovieRepository {
   final MoviedbDatasource datasource;
   MovieReposioryImpl(this.datasource);
+
   @override
   Future<List<Movie>> getMoviesShowtimes({int page = 1}) {
     return datasource.getMoviesShowtimes(page: page);
+  }
+
+  @override
+  Future<List<Movie>> getMoviesPopular({int page = 1}) {
+    return datasource.getMoviesPopular(page: page);
   }
 }
