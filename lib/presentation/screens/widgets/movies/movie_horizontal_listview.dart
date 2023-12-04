@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moviepedia_app/config/helpers/human_formats.dart';
 import 'package:moviepedia_app/domain/entities/movie.dart';
 
@@ -93,7 +94,12 @@ class _Slide extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: 150,
                 loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return FadeIn(child: child);
+                  if (loadingProgress == null) {
+                    return GestureDetector(
+                      onTap: () => context.push('/movie/${movie.id}'),
+                      child: FadeIn(child: child),
+                    );
+                  }
                   return const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Center(
@@ -144,10 +150,6 @@ class _Slide extends StatelessWidget {
                   HumanFormats.number(movie.popularity),
                   style: textStyle.bodySmall,
                 )
-                // Text(
-                //   '${movie.popularity}',
-                //   style: textStyle.bodySmall,
-                // ),
               ],
             ),
           )
