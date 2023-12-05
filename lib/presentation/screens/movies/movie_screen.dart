@@ -49,47 +49,114 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 }
 
 class _CustomSliverList extends StatelessWidget {
+  final Movie movie;
   const _CustomSliverList({
-    super.key,
     required this.movie,
   });
 
-  final Movie? movie;
-
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final textStyles = Theme.of(context).textTheme;
     return SliverList(
-      delegate: SliverChildListDelegate([
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            movie.overview,
-            style: Theme.of(context).textTheme.bodyText2,
-          ),
-        ),
-      ]),
+      delegate: SliverChildBuilderDelegate((context, index) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Imagen
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      movie.posterPath,
+                      width: size.width * 0.3,
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  // Descripción
+                  SizedBox(
+                    width: (size.width - 40) * 0.7,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(movie.title, style: textStyles.titleLarge),
+                        Text(movie.overview),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            // Generos de la película
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Wrap(
+                children: [
+                  ...movie.genreIds.map((gender) => Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Chip(
+                          label: Text(gender),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                        ),
+                      ))
+                ],
+              ),
+            ),
+          ],
+        );
+      }, childCount: 1),
     );
   }
 }
 
 class _CustomSliverAppBar extends StatelessWidget {
+  final Movie movie;
   const _CustomSliverAppBar({
-    super.key,
     required this.movie,
   });
 
-  final Movie? movie;
-
   @override
   Widget build(BuildContext context) {
+    // MediaQuery para obtener las dimensiones del dispositivo
+    final size = MediaQuery.of(context).size;
     return SliverAppBar(
-      expandedHeight: 300,
-      pinned: true,
+      backgroundColor: Colors.black,
+      expandedHeight: size.height * 0.7,
+      foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
-        title: Text(movie.title),
-        background: Image.network(
-          movie.backdropPath,
-          fit: BoxFit.cover,
+        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        title: Text(
+          movie.title,
+          style: const TextStyle(fontSize: 20),
+          textAlign: TextAlign.center,
+        ),
+        background: Stack(
+          children: [
+            SizedBox.expand(
+              child: Image.network(
+                movie.backdropPath,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox.expand(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    stops: [0.0, 0.5],
+                    colors: [Colors.black87, Colors.transparent],
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
