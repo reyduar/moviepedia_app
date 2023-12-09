@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:moviepedia_app/config/helpers/human_formats.dart';
@@ -5,10 +7,29 @@ import 'package:moviepedia_app/domain/entities/movie.dart';
 
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 
-class SearchMovieDelegate extends SearchDelegate {
+class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMovieCallback searchMovie;
+  StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  Timer? _debounceTimer;
 
   SearchMovieDelegate({required this.searchMovie});
+
+  void clearStreams() {
+    debouncedMovies.close();
+    _debounceTimer?.cancel();
+  }
+
+  void _onQueryChanged(String query) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      if (query.isEmpty) {
+        debouncedMovies.add([]);
+        return;
+      }
+      final movies = await searchMovie(query);
+      debouncedMovies.add(movies);
+    });
+  }
 
   @override
   String? get searchFieldLabel => 'Search movie by name';
@@ -32,6 +53,7 @@ class SearchMovieDelegate extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       onPressed: () {
+        clearStreams();
         close(context, null);
       },
       icon: const Icon(Icons.arrow_back),
@@ -45,8 +67,10 @@ class SearchMovieDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMovie(query),
+    _onQueryChanged(query);
+    return StreamBuilder(
+//      future: searchMovie(query),
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
         if (movies.isEmpty) {
@@ -60,7 +84,10 @@ class SearchMovieDelegate extends SearchDelegate {
               final movie = movies[index];
               return _MovieSearchResults(
                 movie: movie,
-                onMovieSelected: close,
+                onMovieSelected: (context, movie) {
+                  clearStreams();
+                  close(context, movie);
+                },
               );
             });
       },
