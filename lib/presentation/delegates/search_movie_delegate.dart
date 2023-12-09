@@ -58,7 +58,10 @@ class SearchMovieDelegate extends SearchDelegate {
             itemCount: movies.length,
             itemBuilder: (context, index) {
               final movie = movies[index];
-              return _MovieSearchResults(movie: movie);
+              return _MovieSearchResults(
+                movie: movie,
+                onMovieSelected: close,
+              );
             });
       },
     );
@@ -67,63 +70,70 @@ class SearchMovieDelegate extends SearchDelegate {
 
 class _MovieSearchResults extends StatelessWidget {
   final Movie movie;
-  const _MovieSearchResults({required this.movie});
+  final Function onMovieSelected;
+  const _MovieSearchResults(
+      {required this.movie, required this.onMovieSelected});
 
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Imagen
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              movie.posterPath,
-              width: size.width * 0.2,
+    return GestureDetector(
+      onTap: () {
+        onMovieSelected(context, movie);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Imagen
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                movie.posterPath,
+                width: size.width * 0.2,
+              ),
             ),
-          ),
 
-          const SizedBox(width: 10),
+            const SizedBox(width: 10),
 
-          // Descripción
-          SizedBox(
-            width: (size.width - 40) * 0.8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  movie.title,
-                  style: textStyles.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  movie.overview,
-                  style: textStyles.bodyMedium,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.star_half_rounded,
-                        size: 15, color: Colors.yellow.shade800),
-                    const SizedBox(width: 5),
-                    Text(
-                      HumanFormats.number(movie.voteAverage, 1),
-                      style: textStyles.bodyMedium!
-                          .copyWith(color: Colors.yellow.shade800),
-                    ),
-                  ],
-                )
-              ],
+            // Descripción
+            SizedBox(
+              width: (size.width - 40) * 0.8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    movie.title,
+                    style: textStyles.titleMedium,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    movie.overview,
+                    style: textStyles.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.star_half_rounded,
+                          size: 15, color: Colors.yellow.shade800),
+                      const SizedBox(width: 5),
+                      Text(
+                        HumanFormats.number(movie.voteAverage, 1),
+                        style: textStyles.bodyMedium!
+                            .copyWith(color: Colors.yellow.shade800),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
