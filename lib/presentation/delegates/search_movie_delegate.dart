@@ -8,7 +8,7 @@ import 'package:moviepedia_app/domain/entities/movie.dart';
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
-  final List<Movie?> initialMovies;
+  List<Movie?> initialMovies;
   final SearchMovieCallback searchMovie;
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
   Timer? _debounceTimer;
@@ -29,7 +29,36 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       // }
       final movies = await searchMovie(query);
       debouncedMovies.add(movies);
+      initialMovies = movies;
     });
+  }
+
+  Widget _buildResultsAndSuggestions() {
+    return StreamBuilder(
+      initialData: initialMovies,
+      stream: debouncedMovies.stream,
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+
+        if (movies.isEmpty) {
+          return const Center(
+            child: Text('Not results'),
+          );
+        }
+        return ListView.builder(
+            itemCount: movies.length,
+            itemBuilder: (context, index) {
+              final movie = movies[index];
+              return _MovieSearchResults(
+                movie: movie!,
+                onMovieSelected: (context, movie) {
+                  clearStreams();
+                  close(context, movie);
+                },
+              );
+            });
+      },
+    );
   }
 
   @override
@@ -63,37 +92,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('Results!!');
+    return _buildResultsAndSuggestions();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    _onQueryChanged(query);
-    return StreamBuilder(
-//      future: searchMovie(query),
-      initialData: initialMovies,
-      stream: debouncedMovies.stream,
-      builder: (context, snapshot) {
-        final movies = snapshot.data ?? [];
-        if (movies.isEmpty) {
-          return const Center(
-            child: Text('Not results'),
-          );
-        }
-        return ListView.builder(
-            itemCount: movies.length,
-            itemBuilder: (context, index) {
-              final movie = movies[index];
-              return _MovieSearchResults(
-                movie: movie!,
-                onMovieSelected: (context, movie) {
-                  clearStreams();
-                  close(context, movie);
-                },
-              );
-            });
-      },
-    );
+    _onQueryChanged(query); // con este metodo aplicamos el debounce
+    return _buildResultsAndSuggestions();
   }
 }
 
