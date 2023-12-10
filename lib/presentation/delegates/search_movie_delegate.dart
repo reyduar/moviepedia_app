@@ -8,11 +8,12 @@ import 'package:moviepedia_app/domain/entities/movie.dart';
 typedef SearchMovieCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
+  final List<Movie?> initialMovies;
   final SearchMovieCallback searchMovie;
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
   Timer? _debounceTimer;
 
-  SearchMovieDelegate({required this.searchMovie});
+  SearchMovieDelegate({required this.searchMovie, required this.initialMovies});
 
   void clearStreams() {
     debouncedMovies.close();
@@ -22,10 +23,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   void _onQueryChanged(String query) {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      if (query.isEmpty) {
-        debouncedMovies.add([]);
-        return;
-      }
+      // if (query.isEmpty) {
+      //   debouncedMovies.add([]);
+      //   return;
+      // }
       final movies = await searchMovie(query);
       debouncedMovies.add(movies);
     });
@@ -70,12 +71,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     _onQueryChanged(query);
     return StreamBuilder(
 //      future: searchMovie(query),
+      initialData: initialMovies,
       stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
         if (movies.isEmpty) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: Text('Not results'),
           );
         }
         return ListView.builder(
@@ -83,7 +85,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
             itemBuilder: (context, index) {
               final movie = movies[index];
               return _MovieSearchResults(
-                movie: movie,
+                movie: movie!,
                 onMovieSelected: (context, movie) {
                   clearStreams();
                   close(context, movie);
