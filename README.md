@@ -12,3 +12,8 @@ Ariel Duarte (c)2023
 
 1. Use .env.template file and rename to .env
 2. Create new api key movie from https://www.themoviedb.org/settings/api
+3. Run Isar build runner command
+
+```
+flutter pub run build_runner build
+```
