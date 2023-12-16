@@ -124,6 +124,12 @@ class _CustomSliverList extends StatelessWidget {
   }
 }
 
+final isFavoriteProvider =
+    FutureProvider.family.autoDispose((ref, int movieId) {
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+  return localStorageRepository.isMovieFavorite(movieId);
+});
+
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({
@@ -134,21 +140,31 @@ class _CustomSliverAppBar extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     // MediaQuery para obtener las dimensiones del dispositivo
     final size = MediaQuery.of(context).size;
+
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7,
       foregroundColor: Colors.white,
       actions: [
         IconButton(
-          onPressed: () {
-            ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
-          },
-          icon: const Icon(Icons.favorite_border),
-          // icon: const Icon(
-          //   Icons.favorite_rounded,
-          //   color: Colors.red,
-          // ),
-        ),
+            onPressed: () {
+              ref
+                  .watch(localStorageRepositoryProvider)
+                  .toggleFavorite(movie)
+                  .then(
+                    (value) => ref.invalidate(isFavoriteProvider(movie.id)),
+                  );
+              // invalidamos para que confirme el click al boton
+              ref.invalidate(isFavoriteProvider(movie.id));
+            },
+            icon: isFavoriteFuture.when(
+                data: (isFavorite) => isFavorite
+                    ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                    : const Icon(Icons.favorite_border),
+                error: (_, __) => throw UnimplementedError(),
+                loading: () => const CircularProgressIndicator())),
       ],
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
