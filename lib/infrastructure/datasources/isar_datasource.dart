@@ -28,7 +28,7 @@ class IsarDatasource extends LocalStorageDatasource {
   }
 
   @override
-  Future<List<Movie>> loadMvoies({int limit = 10, offset = 0}) async {
+  Future<List<Movie>> loadMovies({int limit = 10, offset = 0}) async {
     final isar = await db;
     return isar.movies.where().offset(offset).limit(limit).findAll();
   }
