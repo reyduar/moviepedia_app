@@ -26,7 +26,7 @@ class CustomAppbar extends ConsumerWidget {
                   width: 5,
                 ),
                 Text(
-                  'Showtime Movies',
+                  'FilmSearch+',
                   style: titleStyle,
                 ),
                 const Spacer(),
