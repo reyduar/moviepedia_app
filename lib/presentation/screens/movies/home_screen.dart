@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moviepedia_app/presentation/screens/widgets/widgets.dart';
+import 'package:moviepedia_app/presentation/widgets/widgets.dart';
 import '../../views/views.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,11 +7,7 @@ class HomeScreen extends StatelessWidget {
   final int pageIndex;
   const HomeScreen({super.key, required this.pageIndex});
 
-  final viewRoutes = const <Widget>[
-    HomeView(),
-    CategoryView(),
-    FavoritesView()
-  ];
+  final viewRoutes = const <Widget>[HomeView(), PopularView(), FavoritesView()];
 
   @override
   Widget build(BuildContext context) {

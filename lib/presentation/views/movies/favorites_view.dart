@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moviepedia_app/presentation/providers/storage/favorite_movies_provider.dart';
-import 'package:moviepedia_app/presentation/screens/widgets/widgets.dart';
+import 'package:moviepedia_app/presentation/widgets/widgets.dart';
 
 class FavoritesView extends ConsumerStatefulWidget {
   const FavoritesView({super.key});

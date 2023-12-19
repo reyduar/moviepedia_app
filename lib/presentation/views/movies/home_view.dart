@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/providers.dart';
-import '../../screens/widgets/widgets.dart';
+import '../../widgets/widgets.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
