@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moviepedia_app/domain/entities/movie.dart';
 
 class MoviesSlideshow extends StatelessWidget {
@@ -55,17 +56,16 @@ class _Slide extends StatelessWidget {
       child: DecoratedBox(
         decoration: decoration,
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              movie.backdropPath,
+          borderRadius: BorderRadius.circular(20),
+          child: GestureDetector(
+            onTap: () => context.push('/home/0/movie/${movie.id}'),
+            child: FadeInImage(
               fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return FadeIn(child: child);
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            )),
+              placeholder: const AssetImage('assets/loaders/bottle-loader.gif'),
+              image: NetworkImage(movie.backdropPath),
+            ),
+          ),
+        ),
       ),
     );
   }
