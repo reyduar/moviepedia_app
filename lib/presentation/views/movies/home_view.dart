@@ -11,7 +11,8 @@ class HomeView extends ConsumerStatefulWidget {
   HomeViewState createState() => HomeViewState();
 }
 
-class HomeViewState extends ConsumerState<HomeView> {
+class HomeViewState extends ConsumerState<HomeView>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -23,6 +24,7 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     //* Espera que se carguen todos datos de las secciones
     final initialLoading = ref.watch(initialLoadingProvider);
     if (initialLoading) return const FullScreenLoader();
@@ -35,71 +37,71 @@ class HomeViewState extends ConsumerState<HomeView> {
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
 
     //* Implementamos este CustomScrollView para poder separar el CustomAppbar de la lista del SingleChildScrollView
-    return Visibility(
-      visible: !initialLoading,
-      child: CustomScrollView(slivers: [
-        //* Ahora implmentamos el CustomAppbar en el SliverAppBar para que sea flotante
-        const SliverAppBar(
-          floating: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: CustomAppbar(),
-          ),
+    return CustomScrollView(slivers: [
+      //* Ahora implmentamos el CustomAppbar en el SliverAppBar para que sea flotante
+      const SliverAppBar(
+        floating: true,
+        flexibleSpace: FlexibleSpaceBar(
+          title: CustomAppbar(),
         ),
-        SliverList(
-            delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return Column(
-              children: [
-                // const CustomAppbar(),
-                MoviesSlideshow(movies: slideShowMovies),
+      ),
+      SliverList(
+          delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Column(
+            children: [
+              // const CustomAppbar(),
+              MoviesSlideshow(movies: slideShowMovies),
 
-                // En cartelera
-                MovieHorizontalListView(
-                  title: 'En Cines',
-                  subTitle: 'Now Playing',
-                  movies: showtimesMovies,
-                  loadNextPage: () {
-                    ref.read(showtimesMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
+              // En cartelera
+              MovieHorizontalListView(
+                title: 'En Cines',
+                subTitle: 'Now Playing',
+                movies: showtimesMovies,
+                loadNextPage: () {
+                  ref.read(showtimesMoviesProvider.notifier).loadNextPage();
+                },
+              ),
 
-                // Populares
-                // MovieHorizontalListView(
-                //   title: 'Popular',
-                //   subTitle: 'Best reviews',
-                //   movies: popularMovies,
-                //   loadNextPage: () {
-                //     ref.read(popularMoviesProvider.notifier).loadNextPage();
-                //   },
-                // ),
+              // Populares
+              // MovieHorizontalListView(
+              //   title: 'Popular',
+              //   subTitle: 'Best reviews',
+              //   movies: popularMovies,
+              //   loadNextPage: () {
+              //     ref.read(popularMoviesProvider.notifier).loadNextPage();
+              //   },
+              // ),
 
-                // Estrenos
-                MovieHorizontalListView(
-                  title: 'Próximamente',
-                  subTitle: 'Upcoming',
-                  movies: upcomingMovies,
-                  loadNextPage: () {
-                    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
-                // Recomendados
-                MovieHorizontalListView(
-                  title: 'Recomendadas',
-                  subTitle: 'Top Rated',
-                  movies: toRatedMovies,
-                  loadNextPage: () {
-                    ref.read(toRatedMoviesProvider.notifier).loadNextPage();
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                )
-              ],
-            );
-          },
-          childCount: 1,
-        ))
-      ]),
-    );
+              // Estrenos
+              MovieHorizontalListView(
+                title: 'Próximamente',
+                subTitle: 'Upcoming',
+                movies: upcomingMovies,
+                loadNextPage: () {
+                  ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+                },
+              ),
+              // Recomendados
+              MovieHorizontalListView(
+                title: 'Recomendadas',
+                subTitle: 'Top Rated',
+                movies: toRatedMovies,
+                loadNextPage: () {
+                  ref.read(toRatedMoviesProvider.notifier).loadNextPage();
+                },
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          );
+        },
+        childCount: 1,
+      ))
+    ]);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
