@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:moviepedia_app/config/router/app_router.dart';
 import 'package:moviepedia_app/config/theme/app_theme.dart';
+import 'package:moviepedia_app/presentation/providers/settings/settings_provider.dart';
 
 // DotEnv dotenv = DotEnv() is automatically called during import.
 // If you want to load multiple dotenv files or name your dotenv object differently, you can do the following and import the singleton into the relavant files:
@@ -18,16 +19,17 @@ Future main() async {
   runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final AppTheme appTheme = ref.watch(appThemeNotifierProvider);
     return MaterialApp.router(
       title: 'FilmSearch+',
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme().getTheme(),
+      theme: appTheme.getTheme(),
     );
   }
 }

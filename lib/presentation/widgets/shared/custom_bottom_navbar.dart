@@ -6,15 +6,29 @@ class CustomBottomNavbar extends StatelessWidget {
   const CustomBottomNavbar({super.key, required this.currentIndex});
 
   void onItemTapped(BuildContext context, int index) {
-    context.go('/home/$index');
+    switch (index) {
+      case 0:
+        context.go('/home/0');
+        break;
+
+      case 1:
+        context.go('/home/1');
+        break;
+
+      case 2:
+        context.go('/home/2');
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (value) => onItemTapped(context, value),
         elevation: 0,
+        selectedItemColor: colors.primary,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_max), label: 'Home'),
           BottomNavigationBarItem(

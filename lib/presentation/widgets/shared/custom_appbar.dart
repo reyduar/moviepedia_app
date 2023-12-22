@@ -44,6 +44,15 @@ class CustomAppbar extends ConsumerWidget {
                   ]),
                   icon: const Icon(Icons.info_outline),
                 ),
+                const SizedBox(
+                  width: 5,
+                ),
+                IconButton(
+                  onPressed: () {
+                    context.push('/settings');
+                  },
+                  icon: const Icon(Icons.settings),
+                ),
                 IconButton(
                   onPressed: () {
                     final searchMovies = ref.read(searchMoviesProvider);
