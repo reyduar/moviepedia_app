@@ -31,6 +31,20 @@ class CustomAppbar extends ConsumerWidget {
                 ),
                 const Spacer(),
                 IconButton(
+                  onPressed: () => showAboutDialog(context: context, children: [
+                    const Text('FilmSearch+ v1.0 is a movie search app.'),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text('Copyright ©2024 Ariel Duarte'),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text('Powered by Flutter 3.'),
+                  ]),
+                  icon: const Icon(Icons.info_outline),
+                ),
+                IconButton(
                   onPressed: () {
                     final searchMovies = ref.read(searchMoviesProvider);
                     final searchQuery = ref.read(searchQueryProvider);
