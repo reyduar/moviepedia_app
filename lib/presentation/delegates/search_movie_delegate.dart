@@ -18,21 +18,16 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   void clearStreams() {
     debouncedMovies.close();
-    _debounceTimer?.cancel();
   }
 
   void _onQueryChanged(String query) {
     isLoadingStream.add(true);
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      // if (query.isEmpty) {
-      //   debouncedMovies.add([]);
-      //   return;
-      // }
       final movies = await searchMovie(query);
+      initialMovies = movies;
       debouncedMovies.add(movies);
       isLoadingStream.add(false);
-      initialMovies = movies;
     });
   }
 
@@ -65,7 +60,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 
   @override
-  String? get searchFieldLabel => 'Search movie by name';
+  String? get searchFieldLabel => 'Search movies';
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -132,61 +127,66 @@ class _MovieSearchResults extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
+
     return GestureDetector(
       onTap: () {
         onMovieSelected(context, movie);
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Imagen
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                movie.posterPath,
+      child: FadeIn(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Imagen
+              SizedBox(
                 width: size.width * 0.2,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: FadeInImage(
+                      height: 130,
+                      fit: BoxFit.cover,
+                      image: NetworkImage(movie.posterPath),
+                      placeholder:
+                          const AssetImage('assets/loaders/bottle-loader.gif'),
+                    )),
               ),
-            ),
 
-            const SizedBox(width: 10),
+              const SizedBox(width: 10),
 
-            // Descripción
-            SizedBox(
-              width: (size.width - 40) * 0.8,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    movie.title,
-                    style: textStyles.titleMedium,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    movie.overview,
-                    style: textStyles.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.star_half_rounded,
-                          size: 15, color: Colors.yellow.shade800),
-                      const SizedBox(width: 5),
-                      Text(
-                        HumanFormats.number(movie.voteAverage, 1),
-                        style: textStyles.bodyMedium!
-                            .copyWith(color: Colors.yellow.shade800),
-                      ),
-                    ],
-                  )
-                ],
+              // Descripción
+              SizedBox(
+                width: size.width * 0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movie.title,
+                      style: textStyles.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 5),
+                    (movie.overview.length > 100)
+                        ? Text('${movie.overview.substring(0, 100)}...')
+                        : Text(movie.overview),
+                    Row(
+                      children: [
+                        Icon(Icons.star_half_rounded,
+                            size: 15, color: Colors.yellow.shade800),
+                        const SizedBox(width: 5),
+                        Text(
+                          HumanFormats.number(movie.voteAverage, 1),
+                          style: textStyles.bodyMedium!
+                              .copyWith(color: Colors.yellow.shade800),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

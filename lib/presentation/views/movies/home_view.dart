@@ -55,8 +55,8 @@ class HomeViewState extends ConsumerState<HomeView>
 
               // En cartelera
               MovieHorizontalListView(
-                title: 'En Cines',
-                subTitle: 'Now Playing',
+                title: 'Now Playing',
+                subTitle: 'En Cines',
                 movies: showtimesMovies,
                 loadNextPage: () {
                   ref.read(showtimesMoviesProvider.notifier).loadNextPage();
@@ -75,8 +75,8 @@ class HomeViewState extends ConsumerState<HomeView>
 
               // Estrenos
               MovieHorizontalListView(
-                title: 'Próximamente',
-                subTitle: 'Upcoming',
+                title: 'Upcoming',
+                subTitle: 'Próximamente',
                 movies: upcomingMovies,
                 loadNextPage: () {
                   ref.read(upcomingMoviesProvider.notifier).loadNextPage();
@@ -84,8 +84,8 @@ class HomeViewState extends ConsumerState<HomeView>
               ),
               // Recomendados
               MovieHorizontalListView(
-                title: 'Recomendadas',
-                subTitle: 'Top Rated',
+                title: 'Top Rated',
+                subTitle: 'Recomendadas',
                 movies: toRatedMovies,
                 loadNextPage: () {
                   ref.read(toRatedMoviesProvider.notifier).loadNextPage();
