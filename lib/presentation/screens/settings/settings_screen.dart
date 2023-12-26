@@ -23,24 +23,45 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: const _SettingsAppView(),
+      body: const SettingsAppView(),
     );
   }
 }
 
-// spanish, english, portuguese, french
-enum Language { spanish, english, portuguese, french }
+enum Language { spanish, english, portuguese }
 
-class _SettingsAppView extends StatefulWidget {
-  const _SettingsAppView();
-
-  @override
-  State<_SettingsAppView> createState() => _SettingsAppViewState();
+Language getLanguageValue(String lan) {
+  switch (lan) {
+    case 'es-MX':
+      return Language.spanish;
+    case 'pt-BR':
+      return Language.portuguese;
+    case 'en-US':
+      return Language.english;
+    default:
+      return Language.english;
+  }
 }
 
-class _SettingsAppViewState extends State<_SettingsAppView> {
+class SettingsAppView extends ConsumerStatefulWidget {
+  const SettingsAppView({super.key});
+
+  @override
+  SettingsAppViewState createState() => SettingsAppViewState();
+}
+
+class SettingsAppViewState extends ConsumerState<SettingsAppView> {
   bool isSafeSearch = true;
-  Language selectLanguage = Language.spanish;
+  String languge = 'en-US';
+  Language selectLanguage = getLanguageValue('en-US');
+
+  @override
+  void initState() {
+    super.initState();
+    isSafeSearch = ref.read(isSafeSearchProvider);
+    languge = ref.read(languageProvider);
+    selectLanguage = getLanguageValue(languge);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +78,8 @@ class _SettingsAppViewState extends State<_SettingsAppView> {
         ExpansionTile(
           initiallyExpanded: true,
           title: const Text('Languages'),
-          subtitle: Text('$selectLanguage'),
+          subtitle:
+              const Text('Changes titles and movie descriptions languages'),
           children: [
             RadioListTile(
                 title: const Text('Spanish'),
@@ -66,6 +88,7 @@ class _SettingsAppViewState extends State<_SettingsAppView> {
                 groupValue: selectLanguage,
                 onChanged: (value) => setState(() {
                       selectLanguage = Language.spanish;
+                      ref.read(languageProvider.notifier).state = 'es-MX';
                     })),
             RadioListTile(
                 title: const Text('English'),
@@ -74,6 +97,7 @@ class _SettingsAppViewState extends State<_SettingsAppView> {
                 groupValue: selectLanguage,
                 onChanged: (value) => setState(() {
                       selectLanguage = Language.english;
+                      ref.read(languageProvider.notifier).state = 'en-US';
                     })),
             RadioListTile(
                 title: const Text('Portuguese'),
@@ -82,15 +106,8 @@ class _SettingsAppViewState extends State<_SettingsAppView> {
                 groupValue: selectLanguage,
                 onChanged: (value) => setState(() {
                       selectLanguage = Language.portuguese;
+                      ref.read(languageProvider.notifier).state = 'pt-BR';
                     })),
-            RadioListTile(
-                title: const Text('French'),
-                subtitle: const Text('Français FR'),
-                value: Language.french,
-                groupValue: selectLanguage,
-                onChanged: (value) => setState(() {
-                      selectLanguage = Language.french;
-                    }))
           ],
         ),
       ],

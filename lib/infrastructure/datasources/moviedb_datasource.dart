@@ -6,13 +6,18 @@ import '../mappers/mappers.dart';
 import '../models/models.dart';
 
 class MoviedbDatasource extends MovieDatasource {
-  final dio = Dio(BaseOptions(
+  // ignore: prefer_typing_uninitialized_variables
+
+  final Dio dio = Dio(BaseOptions(
     baseUrl: Environment.apiUrl,
     queryParameters: {
       'api_key': Environment.dbkey,
       'language': 'es-MX',
+      'include_adult': true
     },
   ));
+
+  // final Dio dio;
 
   List<Movie> _jsonToMovies(Map<String, dynamic> json) {
     final moviedbResponse = MovieDbResponse.fromJson(json);
@@ -26,9 +31,8 @@ class MoviedbDatasource extends MovieDatasource {
 
   @override
   Future<List<Movie>> getMoviesShowtimes({int page = 1}) async {
-    final response = await dio.get('/movie/now_playing', queryParameters: {
-      'page': page,
-    });
+    final response =
+        await dio.get('/movie/now_playing', queryParameters: {'page': page});
 
     return _jsonToMovies(response.data);
   }
@@ -76,8 +80,8 @@ class MoviedbDatasource extends MovieDatasource {
   @override
   Future<List<Movie>> searchMovies(String query) async {
     if (query.isEmpty) return [];
-    final response = await dio.get('/search/movie',
-        queryParameters: {'query': query, 'include_adult': true, 'page': 1});
+    final response = await dio
+        .get('/search/movie', queryParameters: {'query': query, 'page': 1});
     return _jsonToMovies(response.data);
   }
 
